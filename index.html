@@ -318,6 +318,22 @@ body.presenting:not(.idle) #phud { opacity: 1; }
 #help td { padding: 8px 0; border-bottom: 1px dashed var(--edge-soft); }
 #help td:first-child { width: 48%; color: var(--ph); }
 
+/* ================= Export PDF / impression ================= */
+#print { display: none; }
+@page { size: 1920px 1080px; margin: 0; }
+@media print {
+  html, body { overflow: visible !important; height: auto !important; background: #050403 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #app, #help { display: none !important; }
+  #print { display: block; }
+}
+.pg { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #050403; break-after: page; page-break-after: always; }
+.pg:last-child { break-after: auto; page-break-after: auto; }
+.pg > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pg .slide { opacity: 1; visibility: visible; transition: none; }
+.pg.full-shade .stage-shade { background: rgba(5,4,3,.72); }
+.pg.no-shade .stage-shade { opacity: .25; }
+.pg .crt::before { opacity: .5; }
+
 @media (max-width: 760px) {
   .brand span, .hide-sm { display: none; }
   #app { grid-template-rows: 56px minmax(0,1fr) auto auto; } #strip { height: 128px; }
@@ -338,6 +354,7 @@ body.presenting:not(.idle) #phud { opacity: 1; }
     <div class="spacer"></div>
     <button class="tb-btn hide-sm" id="btn-help" type="button" aria-label="Raccourcis clavier">?</button>
     <button class="tb-btn hide-sm" id="btn-notes" type="button" aria-pressed="false">Notes <kbd>N</kbd></button>
+    <button class="tb-btn hide-sm" id="btn-pdf" type="button" title="Exporter en PDF : une diapo par page (Ctrl+P aussi)">PDF</button>
     <button class="tb-btn hide-sm" id="btn-here" type="button" title="Présenter depuis la diapositive actuelle (Maj+F5)">Diapo actuelle</button>
     <button class="tb-btn primary" id="btn-start" type="button" title="Présenter depuis le début (F5)">▶ Présenter <kbd class="hide-sm">F5</kbd></button>
   </header>
@@ -381,6 +398,7 @@ body.presenting:not(.idle) #phud { opacity: 1; }
         <tr><td>Clic sur la diapo</td><td>Suivante (en présentation)</td></tr>
         <tr><td>B</td><td>Écran noir</td></tr>
         <tr><td>N</td><td>Notes de l'orateur</td></tr>
+        <tr><td>Bouton PDF ou Ctrl+P</td><td>Exporter en PDF (« Enregistrer au format PDF », fond graphique activé)</td></tr>
         <tr><td>Échap</td><td>Quitter la présentation</td></tr>
       </table>
     </div>
@@ -81169,7 +81187,31 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
   stage.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
   stage.addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) (dx < 0 ? next : prev)(); tx = null; });
 
-  window.__deck = { go, next, prev, present, exitPresent, get index() { return cur; } };
+  // export PDF : chaque diapo devient une page 1920 x 1080, fond 3D figé
+  const printBox = document.createElement('div'); printBox.id = 'print'; document.body.appendChild(printBox);
+  let printed = false;
+  function preparePrint() {
+    if (printed) return; printed = true;
+    printBox.innerHTML = '';
+    slides.forEach((s, i) => {
+      const pg = document.createElement('div');
+      pg.className = 'pg' + (s.dataset.shade === 'full' ? ' full-shade' : s.dataset.shade === 'none' ? ' no-shade' : '');
+      let bg = '';
+      try { bg = window.__snap ? window.__snap(+s.dataset.cam) : ''; } catch (e) {}
+      if (bg) { const im = new Image(); im.className = 'bg'; im.src = bg; im.alt = ''; pg.appendChild(im); }
+      const sh = document.createElement('div'); sh.className = 'stage-shade'; pg.appendChild(sh);
+      const c = s.cloneNode(true); c.classList.remove('active'); c.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+      pg.appendChild(c);
+      const crt = document.createElement('div'); crt.className = 'crt'; pg.appendChild(crt);
+      printBox.appendChild(pg);
+    });
+  }
+  function cleanPrint() { printed = false; printBox.innerHTML = ''; }
+  window.addEventListener('beforeprint', preparePrint);
+  window.addEventListener('afterprint', cleanPrint);
+  $('#btn-pdf').onclick = () => { preparePrint(); setTimeout(() => window.print(), 50); };
+
+  window.__deck = { go, next, prev, present, exitPresent, preparePrint, get index() { return cur; } };
   fit();
   const start = parseInt((location.hash || '').slice(1), 10);
   go(Number.isFinite(start) ? start - 1 : 0, { force: true });
@@ -81389,6 +81431,27 @@ function frame() {
   requestAnimationFrame(frame);
 }
 frame();
+
+// capture figée du décor pour l'export PDF
+window.__snap = (i) => {
+  const keep = { pos: camera.position.clone(), q: camera.quaternion.clone(), lv: blocks.map(b => b.level) };
+  target(i, 8); camera.position.copy(wantPos); camera.lookAt(wantLook);
+  blocks.forEach((b, k) => {
+    const L = k === i ? 1 : k < i ? .45 : .12;
+    b.edges.material.opacity = .18 + L * .8; b.shell.material.opacity = .02 + L * .08;
+    b.layers.forEach((l, j) => { l.material.opacity = (j % 2 ? .12 : .05) + L * (j % 2 ? .6 : .3); });
+    b.glow.material.opacity = Math.max(0, L - .4) * .9;
+  });
+  pulses.forEach(p => { p.p.position.lerpVectors(blocks[p.i].g.position, blocks[p.i + 1].g.position, .5); p.p.material.opacity = p.i < i ? .9 : .3; });
+  const pr = renderer.getPixelRatio();
+  renderer.setPixelRatio(1); renderer.setSize(1920, 1080, false);
+  renderer.render(scene, camera);
+  const url = renderer.domElement.toDataURL('image/jpeg', 0.86);
+  renderer.setPixelRatio(pr); renderer.setSize(1920, 1080, false);
+  camera.position.copy(keep.pos); camera.quaternion.copy(keep.q);
+  blocks.forEach((b, k) => { b.level = keep.lv[k]; });
+  return url;
+};
 </script>
 </body>
 </html>

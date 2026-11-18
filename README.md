@@ -8,6 +8,8 @@ Support de l'oral du projet **« Le Registre »** (R507, blockchain en 3D), dans
 
 Un seul fichier, `index.html`, qui fonctionne aussi hors ligne (Three.js, polices et images embarqués).
 
+Version PDF prête : [`presentation-le-registre.pdf`](presentation-le-registre.pdf) (10 pages, liens cliquables). Le bouton **PDF** de la présentation (ou Ctrl+P, puis « Enregistrer au format PDF ») en génère une à jour.
+
 ## Commandes
 
 | Touche | Action |
@@ -19,5 +21,6 @@ Un seul fichier, `index.html`, qui fonctionne aussi hors ligne (Three.js, police
 | Début / Fin | Première / dernière |
 | B | Écran noir |
 | N | Notes de l'orateur |
+| Bouton PDF, Ctrl+P | Exporter en PDF, une diapo par page |
 | ? | Aide |
 | Échap | Quitter la présentation |
