@@ -318,6 +318,54 @@ body.presenting:not(.idle) #phud { opacity: 1; }
 #help td { padding: 8px 0; border-bottom: 1px dashed var(--edge-soft); }
 #help td:first-child { width: 48%; color: var(--ph); }
 
+/* ================= Mode présentateur ================= */
+#pv { position: fixed; inset: 0; z-index: 200; display: none; background: var(--app-bg); color: var(--ph);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: 58px minmax(0, 1fr); gap: 0; }
+body.presenter #pv { display: grid; }
+body.presenter #app { visibility: hidden; }
+.pv-top { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: var(--app-bar); border-bottom: 1px solid var(--app-line); }
+.pv-top .t { font: 400 26px/1 var(--display); letter-spacing: .06em; }
+.pv-top .badge { font: 600 11px var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--ink); background: var(--ph); padding: 4px 8px; }
+#pv-timer { font: 400 40px/1 var(--display); letter-spacing: .06em; text-shadow: 0 0 10px var(--glow); min-width: 96px; text-align: center; }
+#pv-clock { font: 600 13px var(--mono); color: var(--ph-3); letter-spacing: .1em; }
+#pv-count { font: 400 30px/1 var(--display); color: var(--ph-2); min-width: 80px; text-align: center; }
+.pv-col { min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 16px; overflow: hidden; }
+.pv-col + .pv-col { border-left: 1px solid var(--app-line); }
+.pv-label { font: 600 11px var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--ph-3); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.pv-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 2px solid var(--ph); background: radial-gradient(ellipse at 75% 45%, rgba(255,214,140,.14), transparent 55%), linear-gradient(180deg, #0c0a08, #050403); flex: none; }
+.pv-frame.next { border-color: var(--app-line); width: 62%; }
+.pv-frame .mini { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; pointer-events: none; }
+.pv-frame .mini .slide { opacity: 1; visibility: visible; transition: none; }
+.pv-frame.end::after { content: 'Fin de la présentation'; position: absolute; inset: 0; display: grid; place-items: center; font: 400 28px var(--display); color: var(--ph-3); }
+#pv-notes { flex: 1; min-height: 0; overflow: auto; font: 400 19px/1.55 var(--mono); color: var(--ph-2); padding: 14px 18px; border: 1px solid var(--app-line); background: var(--app-bar); }
+#pv-notes ul { margin: 0; padding-left: 20px; } #pv-notes li { margin-bottom: 8px; }
+.pv-next-row { display: flex; gap: 14px; align-items: flex-start; }
+.pv-hint { font: 400 13px/1.5 var(--mono); color: var(--ph-3); }
+.pv-hint b { color: var(--ph-2); font-weight: 600; }
+/* antisèche */
+.cheat-wrap { flex: 1; min-height: 0; overflow: auto; scrollbar-width: thin; scrollbar-color: var(--ph-3) transparent; }
+.cheat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cn { border: 1px solid var(--edge); background: rgba(8,6,3,.85); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+.cn.wide { grid-column: 1 / -1; }
+.cn h4 { margin: 0; display: flex; align-items: baseline; gap: 8px; font: 600 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ph); }
+.cn h4 i { font: 400 26px/1 var(--display); font-style: normal; color: var(--ph); text-shadow: 0 0 8px var(--glow); }
+.cn svg { width: 100%; height: auto; display: block; }
+.kw { display: flex; flex-wrap: wrap; gap: 4px; }
+.kw span { font: 400 12.5px/1.3 var(--mono); padding: 2px 6px; border: 1px solid var(--edge-soft); color: var(--ph-2); }
+.kw span.k { background: var(--ph); color: var(--ink); border-color: var(--ph); font-weight: 600; }
+.kw span.bad { border-color: rgba(255,107,96,.6); color: var(--bad); }
+.kw span.good { border-color: rgba(79,227,161,.5); color: var(--ok); }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cmp div { border: 1px solid var(--edge-soft); padding: 6px 8px; font: 400 12.5px/1.45 var(--mono); color: var(--ph-2); }
+.cmp b { display: block; font: 400 22px/1 var(--display); color: var(--ph); margin-bottom: 4px; }
+.cmp .p { color: var(--ok); } .cmp .m { color: var(--bad); }
+/* fenêtre public : invitation au plein écran */
+#fs-hint { position: fixed; inset: 0; z-index: 120; display: none; place-items: center; background: rgba(0,0,0,.55); cursor: pointer; }
+body.audience #fs-hint.on { display: grid; }
+#fs-hint .box { text-align: center; padding: 28px 40px; border: 2px solid var(--ph); background: var(--panel); box-shadow: 0 0 40px rgba(255,214,140,.25); }
+#fs-hint b { display: block; font: 400 48px/1 var(--display); letter-spacing: .04em; }
+#fs-hint span { display: block; margin-top: 10px; font: 600 13px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--ph-2); }
+
 /* ================= Export PDF / impression ================= */
 #print { display: none; }
 @page { size: 1920px 1080px; margin: 0; }
@@ -355,8 +403,8 @@ body.presenting:not(.idle) #phud { opacity: 1; }
     <button class="tb-btn hide-sm" id="btn-help" type="button" aria-label="Raccourcis clavier">?</button>
     <button class="tb-btn hide-sm" id="btn-notes" type="button" aria-pressed="false">Notes <kbd>N</kbd></button>
     <button class="tb-btn hide-sm" id="btn-pdf" type="button" title="Exporter en PDF : une diapo par page (Ctrl+P aussi)">PDF</button>
-    <button class="tb-btn hide-sm" id="btn-here" type="button" title="Présenter depuis la diapositive actuelle (Maj+F5)">Diapo actuelle</button>
-    <button class="tb-btn primary" id="btn-start" type="button" title="Présenter depuis le début (F5)">▶ Présenter <kbd class="hide-sm">F5</kbd></button>
+    <button class="tb-btn hide-sm" id="btn-here" type="button" title="Plein écran simple dans cette fenêtre, sans mode présentateur (Maj+F5)">Plein écran simple</button>
+    <button class="tb-btn primary" id="btn-start" type="button" title="Mode présentateur : diapos dans une nouvelle fenêtre, notes et commandes ici (F5)">▶ Présenter <kbd class="hide-sm">F5</kbd></button>
   </header>
 
   <main id="viewport">
@@ -385,6 +433,100 @@ body.presenting:not(.idle) #phud { opacity: 1; }
   </nav>
 </div>
 
+<div id="pv" aria-label="Mode présentateur">
+  <header class="pv-top">
+    <span class="badge">Présentateur</span><span class="t">LE REGISTRE</span>
+    <span id="pv-timer" title="Temps écoulé">00:00</span>
+    <button class="tb-btn icon" id="pv-reset" type="button" title="Remettre le chrono à zéro">↺</button>
+    <span id="pv-clock"></span>
+    <div class="spacer"></div>
+    <button class="tb-btn icon" id="pv-prev" type="button" aria-label="Précédente">◀</button>
+    <span id="pv-count">1 / 10</span>
+    <button class="tb-btn icon" id="pv-next" type="button" aria-label="Suivante">▶</button>
+    <div class="spacer"></div>
+    <button class="tb-btn" id="pv-show" type="button" title="Ramener la fenêtre des diapos au premier plan">Fenêtre diapos</button>
+    <button class="tb-btn" id="pv-black" type="button">Écran noir <kbd>B</kbd></button>
+    <button class="tb-btn primary" id="pv-end" type="button">Terminer</button>
+  </header>
+  <div class="pv-col">
+    <div><div class="pv-label"><span>Diapo actuelle</span><span id="pv-title"></span></div><div class="pv-frame" id="pv-cur"></div></div>
+    <div class="pv-label" style="margin:4px 0 -8px">Notes</div>
+    <div id="pv-notes"></div>
+  </div>
+  <div class="pv-col">
+    <div class="pv-label"><span>Suivante</span></div>
+    <div class="pv-next-row">
+      <div class="pv-frame next" id="pv-next-f"></div>
+      <p class="pv-hint">Flèches, Espace ou clic dans la fenêtre des diapos pour avancer, ici ou là-bas.<br><b>B</b> écran noir.<br><b>Échap</b> dans la fenêtre des diapos quitte le plein écran.</p>
+    </div>
+    <div class="pv-label" style="margin-top:6px"><span>Antisèche · les 7 notions en bref</span></div>
+    <div class="cheat-wrap">
+<div class="cheat">
+  <section class="cn"><h4><i>1</i>Structure d'un bloc</h4>
+    <svg viewBox="0 0 240 78" fill="none" stroke="#ffe9b8" font-family="IBM Plex Mono, monospace" font-size="9">
+      <rect x="60" y="3" width="120" height="72" stroke-width="1.5"/>
+      <g fill="#ffe9b8" stroke="none"><text x="68" y="18">DONNÉES · tx</text><text x="68" y="36">HORODATAGE</text><text x="68" y="54">HASH (le sien)</text><text x="68" y="70" fill="#cfb98a">HASH PRÉCÉDENT</text></g>
+      <path d="M60 22H180M60 40H180M60 58H180" stroke-opacity=".4"/>
+      <path d="M8 66H58" stroke="#cfb98a" stroke-dasharray="3 3"/><text x="8" y="60" fill="#8d7d5c" stroke="none">bloc n-1</text>
+    </svg>
+    <div class="kw"><span class="k">transactions</span><span>horodatage</span><span>son hash</span><span>hash du précédent</span></div>
+  </section>
+  <section class="cn"><h4><i>2</i>Chaînage</h4>
+    <svg viewBox="0 0 240 78" fill="none" stroke="#ffe9b8" font-family="IBM Plex Mono, monospace" font-size="10">
+      <rect x="6" y="20" width="56" height="38" stroke-width="1.5"/><rect x="92" y="20" width="56" height="38" stroke-width="1.5"/><rect x="178" y="20" width="56" height="38" stroke="#ff6b60" stroke-width="1.5"/>
+      <path d="M62 39H92" stroke-width="2"/><path d="M148 39H178" stroke="#ff6b60" stroke-width="2" stroke-dasharray="4 3"/>
+      <path d="M157 32l12 14M169 32l-12 14" stroke="#ff6b60" stroke-width="2"/>
+      <g fill="#ffe9b8" stroke="none"><text x="22" y="43">B1</text><text x="108" y="43">B2</text><text x="194" y="43" fill="#ff6b60">B3</text><text x="40" y="74" fill="#8d7d5c">hash de B1 rangé dans B2</text></g>
+    </svg>
+    <div class="kw"><span class="k">hash du précédent</span><span>= le lien</span><span class="bad">1 bloc change → lien cassé</span></div>
+  </section>
+  <section class="cn"><h4><i>3</i>Immutabilité</h4>
+    <svg viewBox="0 0 240 70" fill="none" stroke-width="1.5" font-family="IBM Plex Mono, monospace" font-size="10">
+      <rect x="6" y="14" width="44" height="34" stroke="#4fe3a1"/><rect x="66" y="14" width="44" height="34" stroke="#ff6b60" fill="rgba(255,107,96,.15)"/><rect x="126" y="14" width="44" height="34" stroke="#ff6b60"/><rect x="186" y="14" width="44" height="34" stroke="#ff6b60"/>
+      <path d="M50 31H66M110 31H126M170 31H186" stroke="#cfb98a"/>
+      <g stroke="none"><text x="74" y="35" fill="#ff6b60">5→500</text><text x="20" y="35" fill="#4fe3a1">ok</text><text x="130" y="64" fill="#ff6b60">tous invalides</text></g>
+    </svg>
+    <div class="kw"><span>donnée modifiée</span><span>→ hash change</span><span class="bad">→ blocs suivants invalides</span><span class="k">fraude visible</span></div>
+  </section>
+  <section class="cn"><h4><i>4</i>Réseau</h4>
+    <svg viewBox="0 0 240 78" fill="none" stroke="#ffe9b8" stroke-width="1.2">
+      <path d="M50 20L120 10L190 20M50 20L40 58L120 70L200 58L190 20M50 20L120 70M190 20L120 70M40 58L200 58M120 10L120 70" stroke-opacity=".35"/>
+      <g fill="#050403" stroke-width="1.5"><rect x="42" y="13" width="16" height="14"/><rect x="112" y="3" width="16" height="14"/><rect x="182" y="13" width="16" height="14"/><rect x="32" y="51" width="16" height="14"/><rect x="112" y="63" width="16" height="14"/><rect x="192" y="51" width="16" height="14"/></g>
+    </svg>
+    <div class="kw"><span class="k">chaque nœud = 1 copie</span><span class="bad">pas d'autorité centrale</span><span class="good">la majorité fait foi</span></div>
+  </section>
+  <section class="cn"><h4><i>5</i>Validation et minage</h4>
+    <svg viewBox="0 0 240 70" fill="none" font-family="IBM Plex Mono, monospace" font-size="10">
+      <rect x="4" y="12" width="78" height="30" stroke="#f2a93b" stroke-width="1.5"/><text x="12" y="31" fill="#f2a93b">nonce++</text>
+      <path d="M84 27H112" stroke="#cfb98a"/><path d="M106 22l6 5-6 5" stroke="#cfb98a"/>
+      <rect x="114" y="12" width="96" height="30" stroke="#4fe3a1" stroke-width="1.5"/><text x="121" y="31" fill="#4fe3a1">hash 0000a3…</text>
+      <text x="218" y="32" fill="#4fe3a1" font-size="16">✓</text>
+      <text x="4" y="62" fill="#8d7d5c">vérifier = 1 seul hash</text>
+    </svg>
+    <div class="kw"><span class="k">trouver le nonce</span><span>preuve de travail</span><span class="bad">coûteux à trouver</span><span class="good">facile à vérifier</span></div>
+  </section>
+  <section class="cn"><h4><i>6</i>Consensus</h4>
+    <div class="cmp">
+      <div><b>PoW · travail</b>puissance de calcul<br><span class="p">+ sécurise le réseau</span><br><span class="m">− énergivore</span></div>
+      <div><b>PoS · enjeu</b>jetons mis en jeu<br><span class="p">+ plus sobre</span><br><span class="m">− avantage les riches</span></div>
+    </div>
+  </section>
+  <section class="cn wide"><h4><i>7</i>Cycle d'une transaction et attaque</h4>
+    <svg viewBox="0 0 480 50" fill="none" font-family="IBM Plex Mono, monospace" font-size="11">
+      <path d="M20 20H460" stroke="#cfb98a" stroke-opacity=".5"/>
+      <g stroke="#ffe9b8" stroke-width="1.5" fill="#050403"><circle cx="20" cy="20" r="7"/><circle cx="130" cy="20" r="7"/><circle cx="240" cy="20" r="7"/><circle cx="350" cy="20" r="7"/></g>
+      <circle cx="460" cy="20" r="7" fill="#4fe3a1"/>
+      <g fill="#ffe9b8"><text x="0" y="44">signée</text><text x="104" y="44">diffusée</text><text x="210" y="44">en attente</text><text x="330" y="44">minée</text><text x="404" y="44" fill="#4fe3a1">confirmée</text></g>
+    </svg>
+    <div class="kw"><span class="bad">attaque 51 % : réécrire l'historique</span><span>contrôler plus de la moitié de la puissance</span><span class="good">très difficile</span></div>
+  </section>
+</div>
+    </div>
+  </div>
+</div>
+
+<div id="fs-hint"><div class="box"><b>Clique pour passer en plein écran</b><span>ou touche F · la présentation se pilote aussi depuis l'autre fenêtre</span></div></div>
+
 <div id="help" role="dialog" aria-modal="true" aria-labelledby="help-title">
   <div class="box panel">
     <header><span id="help-title">Raccourcis</span><span>Échap</span></header>
@@ -393,8 +535,8 @@ body.presenting:not(.idle) #phud { opacity: 1; }
         <tr><td>→ ↓ Espace Entrée Page suiv.</td><td>Diapositive suivante</td></tr>
         <tr><td>← ↑ Retour Page préc.</td><td>Diapositive précédente</td></tr>
         <tr><td>Début / Fin</td><td>Première / dernière</td></tr>
-        <tr><td>F5 ou P</td><td>Présenter depuis le début</td></tr>
-        <tr><td>Maj+F5</td><td>Présenter depuis la diapo actuelle</td></tr>
+        <tr><td>F5 ou P</td><td>Mode présentateur : diapos dans une nouvelle fenêtre, notes ici</td></tr>
+        <tr><td>Maj+F5</td><td>Plein écran simple, dans cette fenêtre</td></tr>
         <tr><td>Clic sur la diapo</td><td>Suivante (en présentation)</td></tr>
         <tr><td>B</td><td>Écran noir</td></tr>
         <tr><td>N</td><td>Notes de l'orateur</td></tr>
@@ -81082,6 +81224,20 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
 
   // navigation
   let cur = -1;
+  // ---- liaison entre la fenêtre présentateur et la fenêtre des diapos ----
+  const body = document.body;
+  const AUD = new URLSearchParams(location.search).get('mode') === 'audience';
+  let peer = null;
+  function send(msg) { try { if (peer && !peer.closed) peer.postMessage(msg, '*'); } catch (e) {} }
+  window.addEventListener('message', e => {
+    const d = e.data; if (!d || !d.reg) return;
+    if (d.reg === 'go') go(d.i, { remote: true });
+    else if (d.reg === 'hello') { peer = e.source; send({ reg: 'go', i: cur }); }
+    else if (d.reg === 'black') $('#blackout').classList.toggle('on', d.on);
+    else if (d.reg === 'bye' && body.classList.contains('presenter')) endPresenter(true);
+  });
+  function setBlack(on) { $('#blackout').classList.toggle('on', on); send({ reg: 'black', on }); }
+
   function go(i, opts = {}) {
     i = Math.max(0, Math.min(N - 1, i));
     if (i === cur && !opts.force) return;
@@ -81101,7 +81257,9 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
     $('#notes-n').textContent = i + 1;
     $('#notes-text').innerHTML = notesHTML[i] || '<em>Pas de notes.</em>';
     $('#pbar').style.width = `${((i + 1) / N) * 100}%`;
-    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    try { history.replaceState(null, '', location.pathname + location.search + '#' + (i + 1)); } catch (e) {}
+    if (!opts.remote) send({ reg: 'go', i });
+    if (body.classList.contains('presenter')) renderPresenter();
     window.dispatchEvent(new CustomEvent('slidechange', { detail: { index: i, cam: +s.dataset.cam } }));
   }
   const next = () => go(cur + 1), prev = () => go(cur - 1);
@@ -81125,7 +81283,6 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
   help.addEventListener('click', e => { if (e.target === help) help.classList.remove('on'); });
 
   // mode présentation
-  const body = document.body;
   function present(fromStart) {
     if (fromStart) go(0);
     body.classList.add('presenting');
@@ -81135,6 +81292,7 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
     fit(); idle();
   }
   function exitPresent() {
+    if (AUD) { if (document.fullscreenElement) document.exitFullscreen(); return; }
     body.classList.remove('presenting', 'idle');
     $('#blackout').classList.remove('on');
     if (document.fullscreenElement || document.webkitFullscreenElement) {
@@ -81142,7 +81300,55 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
     }
     fit();
   }
-  $('#btn-start').onclick = () => present(true);
+  // ---- mode présentateur : diapos dans une nouvelle fenêtre, notes ici ----
+  function mk(i) {
+    const c = slides[i].cloneNode(true); c.classList.remove('active');
+    c.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+    c.querySelectorAll('a').forEach(a => a.removeAttribute('href'));
+    const m = document.createElement('div'); m.className = 'mini'; m.appendChild(c); return m;
+  }
+  function fitFrame(f) { const m = f.querySelector('.mini'); if (m) m.style.transform = `scale(${f.clientWidth / 1920})`; }
+  const pvCur = $('#pv-cur'), pvNext = $('#pv-next-f');
+  new ResizeObserver(() => { fitFrame(pvCur); fitFrame(pvNext); }).observe($('#pv'));
+  function renderPresenter() {
+    pvCur.innerHTML = ''; pvCur.appendChild(mk(cur)); fitFrame(pvCur);
+    pvNext.innerHTML = ''; pvNext.classList.toggle('end', cur >= N - 1);
+    if (cur < N - 1) { pvNext.appendChild(mk(cur + 1)); fitFrame(pvNext); }
+    $('#pv-count').textContent = `${cur + 1} / ${N}`;
+    $('#pv-title').textContent = slides[cur].dataset.title;
+    $('#pv-notes').innerHTML = notesHTML[cur] || '<em>Pas de notes.</em>';
+  }
+  let t0 = 0, tick = null, watch = null;
+  const two = n => String(n).padStart(2, '0');
+  function updTimer() {
+    const s = Math.floor((Date.now() - t0) / 1000);
+    $('#pv-timer').textContent = `${two(Math.floor(s / 60))}:${two(s % 60)}`;
+    const d = new Date(); $('#pv-clock').textContent = `${two(d.getHours())}:${two(d.getMinutes())}`;
+  }
+  function startPresenter(fromStart) {
+    if (fromStart) go(0);
+    const url = location.href.split('#')[0].split('?')[0] + '?mode=audience#' + (cur + 1);
+    const w = window.open(url, 'registre-diapos', 'popup=yes,width=1280,height=760');
+    if (!w) { present(fromStart); return; } // fenêtre bloquée : plein écran simple
+    peer = w;
+    body.classList.add('presenter');
+    renderPresenter();
+    t0 = Date.now(); updTimer(); clearInterval(tick); tick = setInterval(updTimer, 1000);
+    clearInterval(watch); watch = setInterval(() => { if (!peer || peer.closed) endPresenter(true); }, 1000);
+    try { w.focus(); } catch (e) {}
+  }
+  function endPresenter(closed) {
+    body.classList.remove('presenter'); clearInterval(tick); clearInterval(watch);
+    if (!closed && peer && !peer.closed) { try { peer.close(); } catch (e) {} }
+    peer = null; fit();
+  }
+  $('#pv-prev').onclick = () => prev(); $('#pv-next').onclick = () => next();
+  $('#pv-reset').onclick = () => { t0 = Date.now(); updTimer(); };
+  $('#pv-black').onclick = () => setBlack(!$('#blackout').classList.contains('on'));
+  $('#pv-end').onclick = () => endPresenter(false);
+  $('#pv-show').onclick = () => { try { peer && peer.focus(); } catch (e) {} };
+
+  $('#btn-start').onclick = () => startPresenter(true);
   $('#btn-here').onclick = () => present(false);
   $('#h-exit').onclick = e => { e.stopPropagation(); exitPresent(); };
   const onFs = () => { if (!document.fullscreenElement && !document.webkitFullscreenElement && body.classList.contains('presenting')) exitPresent(); };
@@ -81153,7 +81359,7 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
   stage.addEventListener('click', e => {
     if (!body.classList.contains('presenting')) return;
     if (e.target.closest('a, button')) return;
-    if ($('#blackout').classList.contains('on')) { $('#blackout').classList.remove('on'); return; }
+    if ($('#blackout').classList.contains('on')) { setBlack(false); return; }
     next();
   });
   stage.addEventListener('contextmenu', e => { if (body.classList.contains('presenting')) { e.preventDefault(); prev(); } });
@@ -81168,7 +81374,13 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
     if (e.target.closest && e.target.closest('input, textarea')) return;
     const k = e.key;
     if (help.classList.contains('on')) { if (k === 'Escape' || k === '?') help.classList.remove('on'); return; }
-    if (k === 'F5' || ((k === 'p' || k === 'P') && !e.metaKey && !e.ctrlKey)) { e.preventDefault(); present(!e.shiftKey); return; }
+    if (AUD && (k === 'f' || k === 'F')) { goFull(); return; }
+    if (!AUD && (k === 'F5' || ((k === 'p' || k === 'P') && !e.metaKey && !e.ctrlKey))) {
+      e.preventDefault();
+      if (body.classList.contains('presenter')) return;
+      if (e.shiftKey) present(false); else startPresenter(true);
+      return;
+    }
     if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(k)) {
       if (k === 'Enter' && e.target.closest && e.target.closest('a, button')) return;
       e.preventDefault(); next(); return;
@@ -81177,7 +81389,7 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
     if (k === 'Home') { e.preventDefault(); go(0); return; }
     if (k === 'End') { e.preventDefault(); go(N - 1); return; }
     if (k === 'Escape') { if (body.classList.contains('presenting')) exitPresent(); return; }
-    if (k === 'b' || k === 'B' || k === '.') { $('#blackout').classList.toggle('on'); return; }
+    if (k === 'b' || k === 'B' || k === '.') { setBlack(!$('#blackout').classList.contains('on')); return; }
     if (k === 'n' || k === 'N') { toggleNotes(); return; }
     if (k === '?') { help.classList.add('on'); return; }
   });
@@ -81211,7 +81423,25 @@ export { ACESFilmicToneMapping, AddEquation, AddOperation, AdditiveBlending, AgX
   window.addEventListener('afterprint', cleanPrint);
   $('#btn-pdf').onclick = () => { preparePrint(); setTimeout(() => window.print(), 50); };
 
-  window.__deck = { go, next, prev, present, exitPresent, preparePrint, get index() { return cur; } };
+  window.__deck = { go, next, prev, present, exitPresent, preparePrint, startPresenter, endPresenter, get index() { return cur; } };
+
+  // fenêtre des diapos (public)
+  const fsHint = $('#fs-hint');
+  function goFull() {
+    fsHint.classList.remove('on');
+    const el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (req) { try { const p = req.call(el); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+  }
+  if (AUD) {
+    body.classList.add('presenting', 'audience');
+    document.title = 'Le Registre · diapos';
+    fsHint.classList.add('on');
+    fsHint.addEventListener('click', e => { e.stopPropagation(); goFull(); });
+    peer = window.opener;
+    send({ reg: 'hello' });
+    window.addEventListener('beforeunload', () => send({ reg: 'bye' }));
+    idle();
+  }
   fit();
   const start = parseInt((location.hash || '').slice(1), 10);
   go(Number.isFinite(start) ? start - 1 : 0, { force: true });
@@ -81427,7 +81657,7 @@ function frame() {
     p.p.position.lerpVectors(blocks[p.i].g.position, blocks[p.i + 1].g.position, u);
     p.p.material.opacity = (p.i < active ? .9 : .3) * Math.sin(u * Math.PI);
   });
-  renderer.render(scene, camera);
+  if (!document.body.classList.contains('presenter')) renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }
 frame();

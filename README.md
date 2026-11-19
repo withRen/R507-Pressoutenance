@@ -14,8 +14,8 @@ Version PDF prête : [`presentation-le-registre.pdf`](presentation-le-registre.p
 
 | Touche | Action |
 |---|---|
-| F5 ou P | Présenter depuis le début (plein écran) |
-| Maj+F5 | Présenter depuis la diapo actuelle |
+| F5 ou P, bouton Présenter | Mode présentateur : les diapos s'ouvrent dans une nouvelle fenêtre (clic pour le plein écran), cette fenêtre-ci garde les notes, le chrono, la diapo suivante et l'antisèche des 7 notions. Les deux restent synchronisées. |
+| Maj+F5 | Plein écran simple, sans mode présentateur |
 | → ↓ Espace Entrée, clic | Diapo suivante |
 | ← ↑ Retour | Diapo précédente |
 | Début / Fin | Première / dernière |
